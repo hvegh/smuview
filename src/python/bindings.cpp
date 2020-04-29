@@ -93,6 +93,8 @@ PYBIND11_EMBEDDED_MODULE(smuview, m) {
 		"```\n\n"
 		"For more example scripts, please have a look into the `smuscript` folder.";
 
+	//m.add_object("__pdoc__", py::dict(), false);
+
 	// NOTE: The order of initialization is very important! Otherwise types
 	//       could be unknown when pybind11 is generating the function
 	//       signatures.
@@ -763,8 +765,10 @@ void init_Enums(py::module &m)
 		"Enum of all available config keys for controlling a device.");
 	py_config_key.value("Samplerate", sv::devices::ConfigKey::Samplerate,
 		"The samplerate, in Hz.");
+	//m.attr("__pdoc__")["ConfigKey.Samplerate"] = "The samplerate, in Hz.";
 	py_config_key.value("CaptureRatio", sv::devices::ConfigKey::CaptureRatio,
 		"The pre/post-trigger capture ratio.");
+	//m.attr("__pdoc__")["ConfigKey.CaptureRatio"] = "The pre/post-trigger capture ratio.";
 	py_config_key.value("PatternMode", sv::devices::ConfigKey::PatternMode,
 		"A pattern (pattern generator mode).");
 	py_config_key.value("RLE", sv::devices::ConfigKey::RLE,
