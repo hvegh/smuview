@@ -75,7 +75,7 @@ class Plot : public QwtPlot
 	Q_OBJECT
 
 public:
-	Plot(QWidget *parent = nullptr);
+	explicit Plot(QWidget *parent = nullptr);
 	virtual ~Plot();
 
 	virtual void replot() override;

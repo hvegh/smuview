@@ -39,7 +39,7 @@ class WelcomeTab : public BaseTab
 private:
 
 public:
-	WelcomeTab(Session &session, QWidget *parent = nullptr);
+	explicit WelcomeTab(Session &session, QWidget *parent = nullptr);
 
 	string tab_id() override;
 	QString tab_title() override;

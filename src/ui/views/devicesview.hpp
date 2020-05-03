@@ -48,7 +48,7 @@ class DevicesView : public BaseView
 	Q_OBJECT
 
 public:
-	DevicesView(Session &session, QWidget *parent = nullptr);
+	explicit DevicesView(Session &session, QWidget *parent = nullptr);
 
 	QString title() const override;
 

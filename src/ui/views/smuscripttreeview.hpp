@@ -41,7 +41,7 @@ class SmuScriptTreeView : public BaseView
 	Q_OBJECT
 
 public:
-	SmuScriptTreeView(Session &session, QWidget *parent = nullptr);
+	explicit SmuScriptTreeView(Session &session, QWidget *parent = nullptr);
 
 	QString title() const override;
 

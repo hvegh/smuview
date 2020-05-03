@@ -59,7 +59,7 @@ class UiHelper : public QObject
 	Q_OBJECT
 
 public:
-	UiHelper(Session &session);
+	explicit UiHelper(Session &session);
 
 private:
 	Session &session_;

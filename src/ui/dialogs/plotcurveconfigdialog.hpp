@@ -41,7 +41,8 @@ class PlotCurveConfigDialog : public QDialog
 	Q_OBJECT
 
 public:
-	PlotCurveConfigDialog(QwtPlotCurve *plot_curve, QWidget *parent = nullptr);
+	explicit PlotCurveConfigDialog(QwtPlotCurve *plot_curve,
+		QWidget *parent = nullptr);
 
 private:
 	void setup_ui();

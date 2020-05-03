@@ -46,7 +46,7 @@ class BaseCurveData : public QwtSeriesData<QPointF>
 {
 
 public:
-	BaseCurveData(CurveType curve_type);
+	explicit BaseCurveData(CurveType curve_type);
 	virtual ~BaseCurveData() = default;
 
 	virtual bool is_equal(const BaseCurveData *other) const = 0;

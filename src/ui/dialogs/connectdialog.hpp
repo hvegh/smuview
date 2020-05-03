@@ -67,7 +67,8 @@ class ConnectDialog : public QDialog
 	Q_OBJECT
 
 public:
-	ConnectDialog(sv::DeviceManager &device_manager, QWidget *parent = nullptr);
+	explicit ConnectDialog(sv::DeviceManager &device_manager,
+		QWidget *parent = nullptr);
 	~ConnectDialog();
 
 	shared_ptr<sv::devices::HardwareDevice> get_selected_device() const;
