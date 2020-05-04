@@ -310,10 +310,8 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
 	bool data_saved = true;
 
-	/*
 	for (const auto &tab_window_pair : this->tab_window_map_)
 		tab_window_pair.second->save_settings();
-	*/
 
 	if (!data_saved && (QMessageBox::question(this, tr("Confirmation"),
 			tr("There is unsaved data. Close anyway?"),
