@@ -346,7 +346,7 @@ qt5_add_resources(smuview_RESOURCES_RCC ${smuview_RESOURCES})
 
 add_definitions(-DQT_NO_KEYWORDS)
 add_definitions(-D__STDC_LIMIT_MACROS)
-add_definitions(-Wall -Wextra -Woverloaded-virtual) # -Weffc++ -Wconversion -Wsign-conversion)
+add_definitions(-Wall -Wextra -Woverloaded-virtual -Wdeprecated-declarations) # -Weffc++ -Wconversion -Wsign-conversion)
 add_definitions(-std=c++11)
 add_definitions(-DBOOST_MATH_DISABLE_FLOAT128=1)
 
@@ -357,6 +357,7 @@ endif()
 if(ENABLE_SIGNALS)
 	add_definitions(-DENABLE_SIGNALS)
 endif()
+
 
 if(MINGW)
 	# MXE workaround: Prevents compile error:
