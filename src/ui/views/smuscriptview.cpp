@@ -56,8 +56,7 @@ SmuScriptView::SmuScriptView(Session &session, string script_file_name,
 	text_changed_(false),
 	started_from_here_(false)
 {
-	// TODO: Not unique!
-	id_ = "smuscript:";
+	id_ = "smuscript:" + std::to_string(BaseView::id_counter++);;
 
 	setup_ui();
 	setup_toolbar();
@@ -208,6 +207,26 @@ bool SmuScriptView::save(QString file_name)
 	}
 
 	return true;
+}
+
+void SmuScriptView::run_script()
+{
+	if (action_run_->isChecked()) {
+		// Already running!
+		return;
+	}
+
+	action_run_->activate(QAction::Trigger);
+}
+
+void SmuScriptView::stop_script()
+{
+	if (!action_run_->isChecked()) {
+		// Not running!
+		return;
+	}
+
+	action_run_->activate(QAction::Trigger);
 }
 
 void SmuScriptView::on_action_open_triggered()

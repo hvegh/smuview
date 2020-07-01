@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <limits>
 #include <memory>
 #include <set>
 #include <string>
@@ -112,7 +113,17 @@ void init_Session(py::module &m)
 		"    A Dict where the key is the device id and the value is the device object.");
 	py_session.def("connect_device", &sv::Session::connect_device,
 		py::arg("conn_str"),
-		"Connect a new device.\n\n"
+		"Connect a new device. For some devices (like DMMs) you may want to "
+		"wait a fixed time, until the first sample has arrived and an `AnalogSignal` "
+		"object has been created. Example:\n"
+		"```\n"
+		"import smuview\n"
+		"import time\n\n"
+		"# Connect device.\n"
+		"dmm_dev = Session.connect_device(\"hp-3478a:conn=libgpib/hp3478a\")[0]\n"
+		"# Sleep 1s to give the devices the chance to create signals\n"
+		"time.sleep(1)\n"
+		"```\n\n"
 		"Parameters\n"
 		"----------\n"
 		"conn_str : str\n"
@@ -279,7 +290,7 @@ void init_Signal(py::module &m)
 		"pos : int\n"
 		"    The position/number of the sample.\n"
 		"relative_time : bool\n"
-		"    When true, the returned timestamp is relative to the start of the SmuView session.\n\n"
+		"    When `True`, the returned timestamp is relative to the start of the SmuView session.\n\n"
 		"Returns\n"
 		"-------\n"
 		"Tuple[float, float]\n"
@@ -290,7 +301,7 @@ void init_Signal(py::module &m)
 		"Parameters\n"
 		"----------\n"
 		"relative_time : bool\n"
-		"    When true, the returned timestamp is relative to the start of the SmuView session.\n\n"
+		"    When `True`, the returned timestamp is relative to the start of the SmuView session.\n\n"
 		"Returns\n"
 		"-------\n"
 		"Tuple[float, float]\n"
@@ -465,7 +476,6 @@ void init_UI(py::module &m)
 	/*
 	 * TODO:
 	 *  - Change plot curve color
-	 *  - Display message boxes and simple input dialogs (howto return a value?)
 	 */
 
 	py::class_<sv::python::UiProxy> py_ui_helper(m, "UiProxy");
@@ -491,7 +501,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_control_view", &sv::python::UiProxy::ui_add_control_view,
 		py::arg("device_id"), py::arg("area"), py::arg("configurable"),
 		"Add a control view for a configurable to the given tab.\n\n"
@@ -506,7 +516,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_plot_view",
 		(std::string (sv::python::UiProxy::*) (std::string, Qt::DockWidgetArea, shared_ptr<sv::channels::BaseChannel>))
 			&sv::python::UiProxy::ui_add_plot_view,
@@ -523,7 +533,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_plot_view",
 		(std::string (sv::python::UiProxy::*) (std::string, Qt::DockWidgetArea, shared_ptr<sv::data::AnalogTimeSignal>))
 			&sv::python::UiProxy::ui_add_plot_view,
@@ -540,7 +550,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_plot_view",
 		(std::string (sv::python::UiProxy::*) (std::string, Qt::DockWidgetArea, shared_ptr<sv::data::AnalogTimeSignal>, shared_ptr<sv::data::AnalogTimeSignal>))
 			&sv::python::UiProxy::ui_add_plot_view,
@@ -560,7 +570,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_power_panel_view", &sv::python::UiProxy::ui_add_power_panel_view,
 		py::arg("device_id"), py::arg("area"), py::arg("voltage_signal"),
 		py::arg("current_signal"),
@@ -578,7 +588,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_value_panel_view",
 		(std::string (sv::python::UiProxy::*) (std::string, Qt::DockWidgetArea, shared_ptr<sv::channels::BaseChannel>))
 			&sv::python::UiProxy::ui_add_value_panel_view,
@@ -595,7 +605,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 	py_ui_helper.def("add_value_panel_view",
 		(std::string (sv::python::UiProxy::*) (std::string, Qt::DockWidgetArea, shared_ptr<sv::data::AnalogTimeSignal>))
 			&sv::python::UiProxy::ui_add_value_panel_view,
@@ -612,7 +622,7 @@ void init_UI(py::module &m)
 		"Returns\n"
 		"-------\n"
 		"str\n"
-		"    The id of the new view.");
+		"    The id of the new view or empty if the view couldn't be added.");
 
 	py_ui_helper.def("add_signal_to_data_view", &sv::python::UiProxy::ui_add_signal_to_data_view,
 		py::arg("device_id"), py::arg("view_id"), py::arg("signal"),
@@ -650,6 +660,90 @@ void init_UI(py::module &m)
 		"    The x signal object.\n"
 		"y_signal : AnalogTimeSignal\n"
 		"    The y signal object.");
+
+	py_ui_helper.def("show_message_box", &sv::python::UiProxy::ui_show_message_box,
+		py::arg("title"), py::arg("text"),
+		"Show a (info) message box with the given window title and text. "
+		"Returns `True` when the Ok button was pressed.\n\n"
+		"Parameters\n"
+		"----------\n"
+		"title : str\n"
+		"    The window title of the message box.\n"
+		"text : str\n"
+		"    The text to display in the message box.\n\n"
+		"Returns\n"
+		"-------\n"
+		"bool\n"
+		"    `True` when the Ok button was pressed, else `False`.");
+	py_ui_helper.def("show_string_input_dialog", &sv::python::UiProxy::ui_show_string_input_dialog,
+		py::arg("title"), py::arg("label"), py::arg("value") = "",
+		"Show a dialog window to get a string value from the user. It returns "
+		"the entered string value or `None` if the Cancel button was pressed.\n\n"
+		"Parameters\n"
+		"----------\n"
+		"title : str\n"
+		"    The window title of the input dialog.\n"
+		"label : str\n"
+		"    The label to display in the input dialog.\n"
+		"value : str\n"
+		"    The default value of the string.\n\n"
+		"Returns\n"
+		"-------\n"
+		"str or None\n"
+		"    The user entered string value or `None` when the Cancel button was pressed.");
+	py_ui_helper.def("show_double_input_dialog", &sv::python::UiProxy::ui_show_double_input_dialog,
+		py::arg("title"), py::arg("label"),
+		py::arg("value") = 0.0, py::arg("decimals") = 1, py::arg("step") = 0.1,
+		py::arg("min") = std::numeric_limits<double>::min(),
+		py::arg("max") = std::numeric_limits<double>::max(),
+		"Show a dialog window to get a float value from the user. It returns "
+		"the entered float value or `None` if the Cancel button was pressed.\n\n"
+		"Parameters\n"
+		"----------\n"
+		"title : str\n"
+		"    The window title of the input dialog.\n"
+		"label : str\n"
+		"    The label to display in the input dialog.\n"
+		"value : float\n"
+		"    The default value of the float.\n"
+		"decimals : int\n"
+		"    The maximum number of decimal places the number may have. Default is 1.\n"
+		"step : float\n"
+		"    The amount by which the value can be incremented or decremented by the user."
+		"    Default is 0.1.\n"
+		"min : float\n"
+		"    The minimum value the user may choose.\n"
+		"max : float\n"
+		"    The maximum value the user may choose.\n\n"
+		"Returns\n"
+		"-------\n"
+		"float or None\n"
+		"    The user entered float value or `None` when the Cancel button was pressed.");
+	py_ui_helper.def("show_int_input_dialog", &sv::python::UiProxy::ui_show_int_input_dialog,
+		py::arg("title"), py::arg("label"),
+		py::arg("value") = 0, py::arg("step") = 1,
+		py::arg("min") = std::numeric_limits<int>::min(),
+		py::arg("max") = std::numeric_limits<int>::max(),
+		"Show a dialog window to get an integer value from the user. It returns "
+		"the entered float value or `None` if the Cancel button was pressed.\n\n"
+		"Parameters\n"
+		"----------\n"
+		"title : str\n"
+		"    The window title of the input dialog.\n"
+		"label : str\n"
+		"    The label to display in the input dialog.\n"
+		"value : int\n"
+		"    The default value of the integer.\n"
+		"step : int\n"
+		"    The amount by which the value can be incremented or decremented by the user. Default is 1.\n"
+		"min : int\n"
+		"    The minimum value the user may choose.\n"
+		"max : int\n"
+		"    The maximum value the user may choose.\n\n"
+		"Returns\n"
+		"-------\n"
+		"int or None\n"
+		"    The user entered integer value or `None` when the Cancel button was pressed.");
 }
 
 void init_StreamBuf(py::module &m)
@@ -676,7 +770,7 @@ void init_StreamBuf(py::module &m)
 		py::arg("size"),
 		"Raises an OSError, because PyStreamBuf is not seekable.");
 	py_stream_buf.def("writable", &sv::python::PyStreamBuf::py_writable,
-		"Always return True.");
+		"Always return `True`.");
 	py_stream_buf.def("writelines", &sv::python::PyStreamBuf::py_writelines,
 		py::arg("lines"),
 		"Write a list of lines to the stream.");

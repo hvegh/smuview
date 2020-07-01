@@ -57,12 +57,16 @@ private:
 	void setup_ui();
 	void connect_signals();
 
-	static unsigned int smuscript_tab_counter_;
+	static unsigned int smuscript_tab_counter;
 
 	string tab_id_;
 	string script_file_name_;
 	views::SmuScriptView *smu_script_view_;
 	views::SmuScriptOutputView *smu_script_output_view_;
+
+public Q_SLOTS:
+	void run_script();
+	void stop_script();
 
 private Q_SLOTS:
 	void on_file_name_changed(const QString &file_name);
